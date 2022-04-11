@@ -3,7 +3,7 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 public class DeleteOrder {
     public void deleteOrder(int track) {
-        TrackOrderForDelete trackOrderForDelete = new TrackOrderForDelete(track);
+        TrackOrder trackOrderForDelete = new TrackOrder(track);
         Response response =
                 given()
                         .header("Content-type", "application/json")

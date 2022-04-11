@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 
 public class DeleteCourier {
     public void courierDelete(int id) {
-        IdCourierDelete idCourierDelete = new IdCourierDelete(id);
+        IdCourier idCourierDelete = new IdCourier(id);
         Response response =  given()
                 .header("Content-type", "application/json")
                 .and()

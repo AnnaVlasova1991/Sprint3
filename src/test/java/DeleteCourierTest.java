@@ -22,7 +22,7 @@ public class DeleteCourierTest {
         String loginCourier = logoPass.get(0);
         String passwordCourier = logoPass.get(1);
         int id = loginCourierForReturnId.loginCourierAndReturnId(loginCourier, passwordCourier);
-        IdCourierDelete idCourierDelete = new IdCourierDelete(id);
+        IdCourier idCourierDelete = new IdCourier(id);
         Response response =
                 given()
                         .header("Content-type", "application/json")
@@ -37,7 +37,7 @@ public class DeleteCourierTest {
     @Test
     public void deleteCourierWithoutIdCheckBody() {
 
-        IdCourierDelete idCourierDelete = new IdCourierDelete();
+        IdCourier idCourierDelete = new IdCourier();
         Response response =
                 given()
                         .header("Content-type", "application/json")
@@ -53,7 +53,7 @@ public class DeleteCourierTest {
     public void deleteCourierWithUncorrectIdCheckBody() {
 
         int id = new Random().nextInt(56473845);
-        IdCourierDelete idCourierDelete = new IdCourierDelete(id);
+        IdCourier idCourierDelete = new IdCourier(id);
         Response response =
                 given()
                         .header("Content-type", "application/json")

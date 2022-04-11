@@ -1,3 +1,4 @@
+import Model.CredentialCourierForCreate;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.After;
@@ -13,6 +14,9 @@ import static org.hamcrest.Matchers.*;
 public class LoginCourierTest {
     String loginCourier;
     String passwordCourier;
+
+    StepsForPost stepsForCreateCourier = new StepsForPost();
+
     @Before
     public void setUp() {
         RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
@@ -32,14 +36,9 @@ public class LoginCourierTest {
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForLogin credentialCourierForLogin = new CredentialCourierForLogin(loginCourier, passwordCourier);
+        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate(loginCourier, passwordCourier);
         Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(credentialCourierForLogin)
-                        .when()
-                        .post("/api/v1/courier/login");
+                stepsForCreateCourier.doPostRequest("/api/v1/courier/login", credentialCourierForLogin);
         response.then().assertThat().body("id", notNullValue())
                 .and()
                 .statusCode(200);
@@ -50,14 +49,9 @@ public class LoginCourierTest {
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForLogin credentialCourierForLogin = new CredentialCourierForLogin("", passwordCourier);
+        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate("", passwordCourier);
         Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(credentialCourierForLogin)
-                        .when()
-                        .post("/api/v1/courier/login");
+                stepsForCreateCourier.doPostRequest("/api/v1/courier/login", credentialCourierForLogin);
         response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
                 .and()
                 .statusCode(400);
@@ -68,14 +62,9 @@ public class LoginCourierTest {
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForLogin credentialCourierForLogin = new CredentialCourierForLogin(loginCourier + new Random().nextInt(10), passwordCourier);
+        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate(loginCourier + new Random().nextInt(10), passwordCourier);
         Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(credentialCourierForLogin)
-                        .when()
-                        .post("/api/v1/courier/login");
+                stepsForCreateCourier.doPostRequest("/api/v1/courier/login", credentialCourierForLogin);
         response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
                 .and()
                 .statusCode(404);

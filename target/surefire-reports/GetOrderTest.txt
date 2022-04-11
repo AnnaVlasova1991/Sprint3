@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------
 Test set: GetOrderTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.497 sec
+Tests run: 5, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 4.883 s <<< FAILURE! - in GetOrderTest
+getOrderUncorrectIdOrder(GetOrderTest)  Time elapsed: 0.784 s  <<< ERROR!
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: 
+Unrecognized field "code" (class OrderForGetIdAll), not marked as ignorable (one known property: "order"])
+ at [Source: (String)"{"code":404,"message":"Заказ не найден"}"; line: 1, column: 12] (through reference chain: OrderForGetIdAll["code"])
+	at GetOrderTest.getOrderUncorrectIdOrder(GetOrderTest.java:120)
+

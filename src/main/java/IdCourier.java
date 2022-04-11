@@ -3,8 +3,16 @@ public class IdCourier {
     int code;
     String message;
 
+    public IdCourier(int id, int code, String message) {
+        this.id = id;
+        this.code = code;
+        this.message = message;
+    }
+
+
     public IdCourier(int id) {
         this.id = id;
+        this.message = null;
     }
 
     public IdCourier() {
