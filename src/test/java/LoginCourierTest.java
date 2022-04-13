@@ -2,6 +2,7 @@ import client.CourierSteps;
 import client.StepsForDelete;
 import client.StepsForPost;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import jdk.jfr.Description;
 import model.CredentialCourier;
 import org.junit.After;
@@ -30,7 +31,7 @@ public class LoginCourierTest {
         ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier, passwordCourier, ""))
+        StepsForPost.doLoginCourier(loginCourier, passwordCourier)
             .then().assertThat().body("id", notNullValue())
                 .and()
                 .statusCode(200);
@@ -43,11 +44,12 @@ public class LoginCourierTest {
         ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier("", passwordCourier))
-                .then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
+        StepsForPost.doLoginCourier("", passwordCourier)
+            .then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
                 .and()
                 .statusCode(400);
     }
+
     @Test
     @DisplayName("Система вернёт ошибку, если неправильно указать логин или пароль. Если авторизоваться под несуществующим пользователем, запрос возвращает ошибку.")
     @Description("Система вернёт ошибку, если неправильно указать логин или пароль. Если авторизоваться под несуществующим пользователем, запрос возвращает ошибку.")
@@ -55,8 +57,8 @@ public class LoginCourierTest {
         ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier + new Random().nextInt(10), passwordCourier))
-                .then().assertThat().body("message", equalTo("Учетная запись не найдена"))
+        StepsForPost.doLoginCourier(loginCourier + new Random().nextInt(10), passwordCourier)
+            .then().assertThat().body("message", equalTo("Учетная запись не найдена"))
                 .and()
                 .statusCode(404);
     }
