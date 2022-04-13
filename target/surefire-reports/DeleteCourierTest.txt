@@ -1,13 +1,16 @@
 -------------------------------------------------------------------------------
 Test set: DeleteCourierTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.705 s <<< FAILURE! - in DeleteCourierTest
-deleteCourierWithoutIdCheckBody(DeleteCourierTest)  Time elapsed: 0.14 s  <<< FAILURE!
-java.lang.AssertionError: 
-1 expectation failed.
-JSON path message doesn't match.
-Expected: Недостаточно данных для удаления курьера
-  Actual: Not Found.
-
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.501 s <<< FAILURE! - in DeleteCourierTest
+deleteCourierWithoutIdCheckBody(DeleteCourierTest)  Time elapsed: 0.009 s  <<< ERROR!
+java.net.ConnectException: Connection refused: connect
 	at DeleteCourierTest.deleteCourierWithoutIdCheckBody(DeleteCourierTest.java:48)
+
+deleteCourierSuccessCheckBody(DeleteCourierTest)  Time elapsed: 0.48 s  <<< ERROR!
+java.net.ConnectException: Connection refused: connect
+	at DeleteCourierTest.deleteCourierSuccessCheckBody(DeleteCourierTest.java:33)
+
+deleteCourierWithUncorrectIdCheckBody(DeleteCourierTest)  Time elapsed: 0.007 s  <<< ERROR!
+java.net.ConnectException: Connection refused: connect
+	at DeleteCourierTest.deleteCourierWithUncorrectIdCheckBody(DeleteCourierTest.java:64)
 

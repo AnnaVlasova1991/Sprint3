@@ -1,10 +1,10 @@
-import Model.CredentialCourierForCreate;
+import model.CredentialCourier;
 
 import static io.restassured.RestAssured.given;
 
 public class LoginCourierForReturnId {
     public int loginCourierAndReturnId(String login, String password) {
-        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate(login, password);
+        CredentialCourier credentialCourierForLogin = new CredentialCourier(login, password);
         IdCourier idCourier =  given()
                 .header("Content-type", "application/json")
                 .and()

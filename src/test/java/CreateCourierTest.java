@@ -1,9 +1,11 @@
-import Model.CredentialCourierForCreate;
+import client.CourierSteps;
+import client.StepsForDelete;
+import io.qameta.allure.junit4.DisplayName;
+import model.CredentialCourier;
+import client.StepsForPost;
 import com.github.javafaker.Faker;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import jdk.jfr.Description;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -13,77 +15,55 @@ import static org.hamcrest.Matchers.*;
 
 public class CreateCourierTest {
 
-    Faker faker = new Faker();
+    String loginCourier = Faker.instance().name().username();
+    String passwordCourier= Faker.instance().internet().password();
 
-    String loginCourier = faker.name().username();
-    String passwordCourier= faker.internet().password();
-
-    StepsForPost stepsForCreateCourier = new StepsForPost();
-
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
-
-    }
     @After
     public void deleteData() {
-        DeleteCourier deleteCourier = new DeleteCourier();
-        LoginCourierForReturnId loginCourierForReturnId = new LoginCourierForReturnId();
-        int id = loginCourierForReturnId.loginCourierAndReturnId(loginCourier, passwordCourier);
-        deleteCourier.courierDelete(id);
+        int id = StepsForPost.doLoginCourierAndGetId(loginCourier, passwordCourier);
+        StepsForDelete.doCourierDeleteRequest("/api/v1/courier/", id);
     }
 
     @Test
+    @DisplayName("Курьера можно создать. Запрос возвращает правильный код ответа. Успешный запрос возвращает ok:true")
+    @Description("Курьера можно создать. Запрос возвращает правильный код ответа. Успешный запрос возвращает ok:true")
     public void createNewCourierAndCheckResponse() {
-        CredentialCourierForCreate credentialCourierForCreate = new CredentialCourierForCreate(loginCourier, passwordCourier, faker.name().firstName());
-        Response response = stepsForCreateCourier.doPostRequest("/api/v1/courier", credentialCourierForCreate);
-        response.then().assertThat().body("ok", equalTo(true))
-                .and()
-                .statusCode(201);
+        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier, passwordCourier, Faker.instance().name().firstName()))
+            .then().assertThat().body("ok", equalTo(true)).and().statusCode(201);
     }
 
     @Test
+    @DisplayName("Нельзя создать двух одинаковых курьеров")
+    @Description("Нельзя создать двух одинаковых курьеров")
     public void createDoubleCourierAndCheckNegativeResponse() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
-        ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
+        ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForCreate credentialCourier = new CredentialCourierForCreate(loginCourier, passwordCourier, "");
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier", credentialCourier);
-        response.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
+        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier, passwordCourier, ""))
+            .then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and()
                 .statusCode(409);
     }
+
     @Test
+    @DisplayName("Если одного из полей нет, запрос возвращает ошибку")
+    @Description("Если одного из полей нет, запрос возвращает ошибку")
     public void createCourierWithoutFieldAndCheckNegativeResponse() {
-        CredentialCourierForCreate credentialCourier = new CredentialCourierForCreate("", "password", "danzo");
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier", credentialCourier);
-        response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
-                .and()
-                .statusCode(400);
+            StepsForPost.doPostRequestForCreateCourier(new CredentialCourier("", "password", "danzo"))
+                .then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
+                    .and()
+                    .statusCode(400);
     }
 
     @Test
-    public void createNewCourierAndCheckResponseCode() {
-        CredentialCourierForCreate credentialCourier = new CredentialCourierForCreate(loginCourier, passwordCourier,
-                faker.name().firstName());
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier", credentialCourier);
-        response.then()
-                .statusCode(201);
-    }
-
-    @Test
+    @DisplayName("Если создать пользователя с логином, который уже есть, возвращается ошибка")
+    @Description("Если создать пользователя с логином, который уже есть, возвращается ошибка")
     public void createCourierLoginExistAndCheckNegativeResponse() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
-        ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
-        String login = logoPass.get(0);
-        CredentialCourierForCreate credentialCourier = new CredentialCourierForCreate(login, "55555", "kuku");
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier", credentialCourier);
-        response.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
+        ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
+        loginCourier = logoPass.get(0);
+        passwordCourier = logoPass.get(1);
+        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier, Faker.instance().internet().password(), Faker.instance().name().firstName()))
+            .then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and()
                 .statusCode(409);
     }

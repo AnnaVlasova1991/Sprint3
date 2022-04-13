@@ -1,71 +1,62 @@
-import Model.CredentialCourierForCreate;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import client.CourierSteps;
+import client.StepsForDelete;
+import client.StepsForPost;
+import io.qameta.allure.junit4.DisplayName;
+import jdk.jfr.Description;
+import model.CredentialCourier;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class LoginCourierTest {
+
     String loginCourier;
     String passwordCourier;
 
-    StepsForPost stepsForCreateCourier = new StepsForPost();
-
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
-    }
-
     @After
     public void deleteData() {
-        DeleteCourier deleteCourier = new DeleteCourier();
-        LoginCourierForReturnId loginCourierForReturnId = new LoginCourierForReturnId();
-        int id = loginCourierForReturnId.loginCourierAndReturnId(loginCourier, passwordCourier);
-        deleteCourier.courierDelete(id);
+        int id = StepsForPost.doLoginCourierAndGetId(loginCourier, passwordCourier);
+        StepsForDelete.doCourierDeleteRequest("/api/v1/courier/", id);
     }
 
     @Test
+    @DisplayName("Курьер может авторизоваться. Для авторизации нужно передать все обязательные поля. Успешный запрос возвращает id")
+    @Description("Курьер может авторизоваться. Для авторизации нужно передать все обязательные поля. Успешный запрос возвращает id")
     public void loginCourierAndCheckSuccessResponse() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
-        ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
+        ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate(loginCourier, passwordCourier);
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier/login", credentialCourierForLogin);
-        response.then().assertThat().body("id", notNullValue())
+        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier, passwordCourier, ""))
+            .then().assertThat().body("id", notNullValue())
                 .and()
                 .statusCode(200);
     }
+
     @Test
+    @DisplayName("Для авторизации нужно передать все обязательные поля. Если какого-то поля нет, запрос возвращает ошибку.")
+    @Description("Для авторизации нужно передать все обязательные поля. Если какого-то поля нет, запрос возвращает ошибку.")
     public void loginCourierWithoutFieldAndCheckNegativeResponse() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
-        ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
+        ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate("", passwordCourier);
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier/login", credentialCourierForLogin);
-        response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
+        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier("", passwordCourier))
+                .then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
                 .and()
                 .statusCode(400);
     }
     @Test
+    @DisplayName("Система вернёт ошибку, если неправильно указать логин или пароль. Если авторизоваться под несуществующим пользователем, запрос возвращает ошибку.")
+    @Description("Система вернёт ошибку, если неправильно указать логин или пароль. Если авторизоваться под несуществующим пользователем, запрос возвращает ошибку.")
     public void uncorrectLoginCourierAndCheckNegativeResponse() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
-        ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
+        ArrayList<String> logoPass = CourierSteps.getCreatedCourier();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
-        CredentialCourierForCreate credentialCourierForLogin = new CredentialCourierForCreate(loginCourier + new Random().nextInt(10), passwordCourier);
-        Response response =
-                stepsForCreateCourier.doPostRequest("/api/v1/courier/login", credentialCourierForLogin);
-        response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
+        StepsForPost.doPostRequestForCreateCourier(new CredentialCourier(loginCourier + new Random().nextInt(10), passwordCourier))
+                .then().assertThat().body("message", equalTo("Учетная запись не найдена"))
                 .and()
                 .statusCode(404);
     }

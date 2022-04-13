@@ -1,4 +1,31 @@
 -------------------------------------------------------------------------------
 Test set: LoginCourierTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.224 s - in LoginCourierTest
+Tests run: 3, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 2.746 s <<< FAILURE! - in LoginCourierTest
+loginCourierAndCheckSuccessResponse(LoginCourierTest)  Time elapsed: 0.905 s  <<< FAILURE!
+java.lang.AssertionError: 
+1 expectation failed.
+JSON path id doesn't match.
+Expected: not null
+  Actual: null
+
+	at LoginCourierTest.loginCourierAndCheckSuccessResponse(LoginCourierTest.java:34)
+
+uncorrectLoginCourierAndCheckNegativeResponse(LoginCourierTest)  Time elapsed: 0.975 s  <<< FAILURE!
+java.lang.AssertionError: 
+1 expectation failed.
+JSON path message doesn't match.
+Expected: Учетная запись не найдена
+  Actual: null
+
+	at LoginCourierTest.uncorrectLoginCourierAndCheckNegativeResponse(LoginCourierTest.java:59)
+
+loginCourierWithoutFieldAndCheckNegativeResponse(LoginCourierTest)  Time elapsed: 0.859 s  <<< FAILURE!
+java.lang.AssertionError: 
+1 expectation failed.
+JSON path message doesn't match.
+Expected: Недостаточно данных для входа
+  Actual: Недостаточно данных для создания учетной записи
+
+	at LoginCourierTest.loginCourierWithoutFieldAndCheckNegativeResponse(LoginCourierTest.java:47)
+

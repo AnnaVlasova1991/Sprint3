@@ -1,5 +1,4 @@
-// импортируем RestAssured
-import io.restassured.RestAssured;
+package model;// импортируем RestAssured
 // импортируем Response
 import io.restassured.response.Response;
 // импортируем библиотеку генерации строк
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 // дополнительный статический импорт нужен, чтобы использовать given(), get() и then()
 import static io.restassured.RestAssured.*;
 
-public class scooterRegisterCourier {
+public class ScooterRegisterCourier {
 
     /*
     метод регистрации нового курьера

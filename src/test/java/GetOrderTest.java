@@ -1,5 +1,6 @@
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import model.ScooterRegisterCourier;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class GetOrderTest {
     }
     @Test
     public void getOrderAndCheckResponse() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
+        ScooterRegisterCourier scooterRegisterCourier = new ScooterRegisterCourier();
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
@@ -48,7 +49,7 @@ public class GetOrderTest {
     }
     @Test
     public void getOrderWithoutIdCourier() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
+        ScooterRegisterCourier scooterRegisterCourier = new ScooterRegisterCourier();
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
@@ -68,7 +69,7 @@ public class GetOrderTest {
     }
     @Test
     public void getOrderUncorrectIdCourier() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
+        ScooterRegisterCourier scooterRegisterCourier = new ScooterRegisterCourier();
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
@@ -88,7 +89,7 @@ public class GetOrderTest {
     }
     @Test
     public void getOrderWithoutIdOrder() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
+        ScooterRegisterCourier scooterRegisterCourier = new ScooterRegisterCourier();
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
@@ -108,7 +109,7 @@ public class GetOrderTest {
         }
     @Test
     public void getOrderUncorrectIdOrder() {
-        scooterRegisterCourier scooterRegisterCourier = new scooterRegisterCourier();
+        ScooterRegisterCourier scooterRegisterCourier = new ScooterRegisterCourier();
         ArrayList<String> logoPass = scooterRegisterCourier.registerNewCourierAndReturnLoginPassword();
         loginCourier = logoPass.get(0);
         passwordCourier = logoPass.get(1);
